@@ -28,7 +28,7 @@ type ConfigResponse struct {
 type ConfigService interface {
 
 	//	Get a specific config item
-	Get(name string) ConfigResponse
+	Get(name string) (ConfigResponse, error)
 
 	//	Get a specific config string
 	GetString(name string, defaultValue string) string
