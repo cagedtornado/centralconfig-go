@@ -1,9 +1,9 @@
 package configmanager
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -41,29 +41,22 @@ func (client ConfigClient) Get(name string) (ConfigResponse, error) {
 		Name:        name}
 
 	//	Serialize our request to JSON:
-	requestBytes, err := json.Marshal(request)
+	requestBytes := new(bytes.Buffer)
+	err := json.NewEncoder(requestBytes).Encode(&request)
 	if err != nil {
 		return retval, err
 	}
 
 	// Convert bytes to a reader.
-	requestJSON := strings.NewReader(string(requestBytes))
+	requestJSON := strings.NewReader(requestBytes.String())
 
 	//	Post the JSON to the api url
 	res, err := http.Post(apiUrl, "application/json", requestJSON)
 	defer res.Body.Close()
-	if err != nil {
-		return retval, err
-	}
 
-	//	Read the body of the response if we have one:
-	body, err := ioutil.ReadAll(res.Body)
+	//	Decode the return object
+	err = json.NewDecoder(res.Body).Decode(&retval)
 	if err != nil {
-		return retval, err
-	}
-
-	//	Unmarshall from JSON into our struct:
-	if err := json.Unmarshal(body, &retval); err != nil {
 		return retval, err
 	}
 

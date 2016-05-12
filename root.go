@@ -6,19 +6,31 @@ import (
 
 //	ConfigItem represents a configuration item
 type ConfigItem struct {
-	Id          int64     `sql:"id" json:"id"`
-	Application string    `sql:"application" json:"application"`
-	Machine     string    `sql:"machine" json:"machine"`
-	Name        string    `sql:"name" json:"name"`
-	Value       string    `sql:"value" json:"value"`
-	LastUpdated time.Time `sql:"updated" json:"updated"`
+	Id          int64     `json:"id,omitempty"`
+	Application string    `json:"application"`
+	Machine     string    `json:"machine,omitempty"`
+	Name        string    `json:"name"`
+	Value       string    `json:"value,omitempty"`
+	LastUpdated time.Time `json:"updated,omitempty"`
 }
 
 //	ConfigResponse represents a response from the centralconfig service
 type ConfigResponse struct {
-	Status  int         `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Status  int        `json:"status"`
+	Message string     `json:"message"`
+	Data    ConfigItem `json:"data"`
+}
+
+type ConfigResponseMultiple struct {
+	Status  int          `json:"status"`
+	Message string       `json:"message"`
+	Data    []ConfigItem `json:"data"`
+}
+
+type ConfigResponseApps struct {
+	Status  int      `json:"status"`
+	Message string   `json:"message"`
+	Data    []string `json:"data"`
 }
 
 //	ConfigService encapsulates account (user) based operations
