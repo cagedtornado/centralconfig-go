@@ -15,7 +15,7 @@ machine:
     - go get -t -d -v github.com/cagedtornado/centralconfig/...
     - go install -v github.com/cagedtornado/centralconfig/...
     # Start the service and run it in the background
-    - centralconfig start:
+    - centralconfig serve:
           background: true
 dependencies:
   pre:    
