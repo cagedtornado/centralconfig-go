@@ -17,11 +17,11 @@ func getCentralConfigInfo() configmanager.ConfigClient {
 
 }
 
-//	We should be able to get a configitem back
+//	We should be able to get a blank configitem back
 func TestConfigManager_Get_ReturnsConfigResponse(t *testing.T) {
 	//	Arrange
 	config := getCentralConfigInfo()
-	expected := "Magic!"
+	expected := ""
 
 	//	Act
 	response, err := config.Get("TestItem42")
