@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -34,6 +35,12 @@ func (client ConfigClient) Get(name string) (ConfigResponse, error) {
 	}
 
 	//	Get the machine name if it hasn't been set
+	if client.Machine == "" {
+		hostname, err := os.Hostname()
+		if err == nil {
+			client.Machine = hostname
+		}
+	}
 
 	//	Create our request
 	request := ConfigItem{
