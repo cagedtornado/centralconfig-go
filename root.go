@@ -46,7 +46,7 @@ type ConfigService interface {
 	GetString(name string, defaultValue string) string
 
 	//	Create / update a config item
-	Set(c *ConfigItem) (ConfigItem, error)
+	Set(c *ConfigItem) (ConfigResponse, error)
 
 	//	Get all config items for the given application
 	GetAllForApplication(application string) ([]ConfigItem, error)
