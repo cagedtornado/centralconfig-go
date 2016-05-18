@@ -51,8 +51,6 @@ func TestConfigManager_Get_ReturnsConfigResponse(t *testing.T) {
 func TestConfigManager_Set_ReturnsConfigResponse(t *testing.T) {
 	//	Arrange
 	config := getCentralConfigInfo()
-	filename := "config.db"
-	defer os.Remove(filename)
 
 	request := configmanager.ConfigItem{
 		Application: unitTestAppName,
@@ -82,8 +80,6 @@ func TestConfigManager_Set_ReturnsConfigResponse(t *testing.T) {
 func TestConfigManager_Set_WithMachine_ReturnsConfigResponse(t *testing.T) {
 	//	Arrange
 	config := getCentralConfigInfo()
-	filename := "config.db"
-	defer os.Remove(filename)
 
 	//	Set the hostname to the os Hostname or
 	//	the default hostname
