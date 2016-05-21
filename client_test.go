@@ -237,3 +237,64 @@ func TestConfigManager_GetAll_ReturnsConfigResponseMultiple(t *testing.T) {
 		t.Errorf("Got '%v' items back.  Should be at least '%v' items", len(response.Data), len(requests))
 	}
 }
+
+//	We should be able to set multiple items for a specific application and get them all back
+func TestConfigManager_GetAllForApplication_ReturnsConfigResponseMultiple(t *testing.T) {
+	//	Arrange
+	config := getCentralConfigInfo()
+
+	//	Set the hostname to the os Hostname or
+	//	the default hostname
+	hostName, err := os.Hostname()
+	if err != nil {
+		hostName = defaultMachineName
+	}
+
+	requests := []configmanager.ConfigItem{}
+
+	//	--- Config item for the default app
+	requests = append(requests, configmanager.ConfigItem{
+		Application: "*",
+		Name:        "TestItem39",
+		Value:       "GetAllForApplication"})
+
+	//	--- Config item without a machine name
+	requests = append(requests, configmanager.ConfigItem{
+		Application: unitTestAppName,
+		Name:        "TestItem42",
+		Value:       "GetAllForApplication"})
+
+	//	--- Config item with machine name
+	requests = append(requests, configmanager.ConfigItem{
+		Application: unitTestAppName,
+		Machine:     hostName,
+		Name:        "TestItem42",
+		Value:       "GetAllForApplication"})
+
+	//	Clean up:
+	defer func() {
+		for _, item := range requests {
+			config.Remove(&item)
+		}
+	}()
+
+	//	Act
+	for _, item := range requests {
+		config.Set(&item)
+	}
+
+	response, err := config.GetAll()
+
+	//	Assert
+	if err != nil {
+		t.Errorf("Can't get all configs: %v", err)
+	}
+
+	if response.Status != http.StatusOK {
+		t.Errorf("ConfigResponse isn't OK: %v Response is %v:%v", err, response.Status, response.Message)
+	}
+
+	if len(response.Data) == 0 {
+		t.Errorf("Got '%v' items back.  Should be at least '%v' items", len(response.Data), len(requests))
+	}
+}

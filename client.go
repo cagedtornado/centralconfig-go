@@ -77,6 +77,57 @@ func (client ConfigClient) Get(name string) (ConfigResponse, error) {
 }
 
 //	Get a specific config item
+func (client ConfigClient) GetAllForApplication() (ConfigResponseMultiple, error) {
+	retval := ConfigResponseMultiple{}
+
+	//	First, see if we have a service url set:
+	if client.ServiceUrl == "" {
+		err := fmt.Errorf("Please specify a 'ServiceUrl' for the centralconfig service")
+		return retval, err
+	}
+
+	apiUrl := client.ServiceUrl + "/config/getallforapp"
+
+	//	Check to see if we have an application
+	if client.Application == "" {
+		err := fmt.Errorf("Please specify an 'Application' to get configuration for")
+		return retval, err
+	}
+
+	//	Create our request
+	request := ConfigItem{
+		Application: client.Application}
+
+	//	Serialize our request to JSON:
+	requestBytes := new(bytes.Buffer)
+	err := json.NewEncoder(requestBytes).Encode(&request)
+	if err != nil {
+		return retval, err
+	}
+
+	// Convert bytes to a reader.
+	requestJSON := strings.NewReader(requestBytes.String())
+
+	//	Post the JSON to the api url
+	res, err := http.Post(apiUrl, "application/json", requestJSON)
+	if res != nil {
+		defer res.Body.Close()
+	}
+
+	if err != nil {
+		return retval, err
+	}
+
+	//	Decode the return object
+	err = json.NewDecoder(res.Body).Decode(&retval)
+	if err != nil {
+		return retval, err
+	}
+
+	return retval, nil
+}
+
+//	Get a specific config item
 func (client ConfigClient) GetAll() (ConfigResponseMultiple, error) {
 	retval := ConfigResponseMultiple{}
 

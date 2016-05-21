@@ -49,10 +49,10 @@ type ConfigService interface {
 	Set(c *ConfigItem) (ConfigResponse, error)
 
 	//	Get all config items for the given application
-	GetAllForApplication(application string) ([]ConfigItem, error)
+	GetAllForApplication(application string) (ConfigResponseMultiple, error)
 
 	//	Get all config items for all applications (including global)
-	GetAll() ([]ConfigItem, error)
+	GetAll() (ConfigResponseMultiple, error)
 
 	//	Get all applications (including global)
 	GetAllApplications() ([]string, error)
